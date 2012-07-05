@@ -3,34 +3,9 @@ set nocompatible
 "source $VIMRUNTIME/mswin.vim
 "behave mswin
 
-set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
-
 syntax enable
 "set background=dark
-colorscheme torte
+colorscheme oceandeep
 
 let mapleader=","
 
@@ -73,7 +48,7 @@ autocmd FileType php set iskeyword+=$
 nnoremap / /\v
 vnoremap / /\v
 
-"map <F6> :NERDTreeToggle<CR>
+map <F6> :NERDTreeToggle<CR>
 map <C-Right> :bn<CR>
 map <C-Left> :bp<CR>
 imap <C-BS> <C-w>
@@ -104,27 +79,29 @@ nmap <F5> :!python "%"<CR>
 " --------------------------------------
 " Ativa fechamento automático para parêntese
 " Set automatic expansion of parenthesis/brackets
-inoremap ( ()<esc>:call BC_AddChar(")")<cr>i
-inoremap { {}<esc>:call BC_AddChar("}")<cr>i
-inoremap [ []<esc>:call BC_AddChar("]")<cr>i
+"inoremap ( ()<esc>:call BC_AddChar(")")<cr>i
+"inoremap { {}<esc>:call BC_AddChar("}")<cr>i
+"inoremap [ []<esc>:call BC_AddChar("]")<cr>i
 " inoremap " ""<esc>:call BC_AddChar(""")<cr>i
 "
 " mapeia CTRL+j para pular fora de parênteses colchetes etc...
-inoremap <C-j> <esc>:call search(BC_GetChar(), "W")<cr>a
+"inoremap <C-j> <esc>:call search(BC_GetChar(), "W")<cr>a
 " Function for the above
-function! BC_AddChar(schar)
-   if exists("b:robstack")
-       let b:robstack = b:robstack . a:schar
-   else
-       let b:robstack = a:schar
-   endif
-endfunction
-function! BC_GetChar()
-   let l:char = b:robstack[strlen(b:robstack)-1]
-   let b:robstack = strpart(b:robstack, 0, strlen(b:robstack)-1)
-   return l:char
-endfunction
+" function! BC_AddChar(schar)
+"    if exists("b:robstack")
+"        let b:robstack = b:robstack . a:schar
+"    else
+"        let b:robstack = a:schar
+"    endif
+" endfunction
+" function! BC_GetChar()
+"    let l:char = b:robstack[strlen(b:robstack)-1]
+"    let b:robstack = strpart(b:robstack, 0, strlen(b:robstack)-1)
+"    return l:char
+" endfunction
 
 "set statusline=[%{&ff}/%Y]\ [ASCII=\%03.3b]-\ [%04l,%04v][%p%%]
 "set laststatus=2
 
+"FuzzyFinder
+map ,f :FufFile<CR>

@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/home/clayton/tmp'
+let g:netrw_dirhist_2='/home/clayton/dev/banco/Banco/Real'
+let g:netrw_dirhist_3='/home/clayton/tmp/pelican_venv/lib/python2.7/site-packages/pelican/themes/simple'
