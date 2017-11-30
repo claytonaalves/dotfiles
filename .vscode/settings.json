@@ -1,0 +1,34 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true,
+        "**/venv": true,
+        "**/runtime": true
+    },
+    "python.pythonPath": "C:\\Python27\\python.exe",
+    "emmet.syntaxProfiles": {
+        "vue-html": "html"
+    },
+    "workbench.colorTheme": "Solarized Dark",
+    "workbench.activityBar.visible": true,
+    "workbench.editor.enablePreview": false,
+    "terminal.integrated.shell.windows": "C:\\Windows\\Sysnative\\cmd.exe",
+    "objectpascal.delphiInstallationPath": "C:\\Program Files (x86)\\Borland\\Delphi7\\Source",
+    "php.validate.executablePath": "C:\\bin\\php\\php.exe",
+    "php.executablePath": "C:\\bin\\php\\php.exe",
+    "php.suggest.basic": false,
+    "editor.multiCursorModifier": "alt",
+    "editor.renderIndentGuides": false,
+
+    // Visual
+    "workbench.colorCustomizations": {
+        "editor.selectionHighlightBackground": "#374092",
+        "editor.selectionBackground": "#2f53afd0",
+        "editor.selectionForeground": "#5160b6"
+    }    
+}
