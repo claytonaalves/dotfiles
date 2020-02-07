@@ -1,3 +1,7 @@
+rplc() {
+    ag -wil $1 | xargs -n1 -I{} sh -c "sed -i -b 's/\<$1\>/$2/gI' {}"
+}	
+
 alias ll='ls -lh'
 alias diff='colordiff'
 alias ping='ping -c 5'
