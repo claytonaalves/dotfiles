@@ -1,107 +1,137 @@
-set nocompatible
-"source $VIMRUNTIME/vimrc_example.vim
-"source $VIMRUNTIME/mswin.vim
-"behave mswin
+set nocompatible              " be iMproved
 
-syntax enable
-"set background=dark
-colorscheme oceandeep
+call plug#begin('~/.vim/plugged')
+
+Plug 'godlygeek/tabular'
+Plug 'kien/ctrlp.vim'
+Plug 'mattn/emmet-vim'
+Plug 'rakr/vim-one'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'blueshirts/darcula'
+Plug 'vim-vdebug/vdebug'
+
+call plug#end()
+
+filetype off
+filetype plugin indent on
+
+" My custom shit...
+syntax on
 
 let mapleader=","
 
-set virtualedit=all              " allow the cursor to go in to "invalid" places
+set virtualedit=all
 set expandtab                    " expand tabs by default (overloadable per file type later)
 set tabstop=4                    " a tab is four spaces
 set softtabstop=4                " when hitting <BS>, pretend like a tab is removed, even if spaces
 set shiftwidth=4                 " number of spaces to use for autoindenting
 set backspace=indent,eol,start   " allow backspacing over everything in insert mode
-set nowrap                       " don't wrap lines
+set nowrap
 set hidden
-set number                       " always show line numbers
+set number
+
+set clipboard=unnamed "unnamedplus
+
+set wildignore+=*.so,*.swp,*.zip,*.class,*.apk,*.pyc,*/venv
 
 set hlsearch
 set incsearch
 set ignorecase
 set smartcase
 
-set gdefault
-set enc=utf-8                    " utf-8 default encoding
-set fileformats=unix,dos,mac     " prefer unix over windows over os9 formats
-set scrolloff=5                  " keep some more lines for scope
-set autochdir
-"set nobackup
-"set noswapfile
-"set backupdir=c:\tmp
-"set directory=c:\tmp
+"set laststatus=2 "show filename in status
 
-set guioptions+=lrb
-set guioptions-=lrb
-set guioptions-=T
-set guioptions-=m
-set gfn=Monospace
-set shortmess+=I
+nnoremap <c-k> <C-Y>
+nnoremap <c-j> <C-E>
 
-filetype plugin indent on
-autocmd FileType python set complete+=k~/.vim/syntax/python.vim
+map <c-l> :bnext<CR>
+map <c-h> :bprevious<CR>
+
+nnoremap <silent> <leader>w :w<CR>
+nnoremap <silent> <leader>c :bd<CR>
+
+"nmap <PageUp> :tabprevious<CR>
+"nmap <PageDown> :tabnext<CR>
+
+" Automatic parenthesis/brackets expansion {
+inoremap ( ()<esc>:call BC_AddChar(")")<cr>i
+inoremap { {}<esc>:call BC_AddChar("}")<cr>i
+inoremap [ []<esc>:call BC_AddChar("]")<cr>i
+inoremap " ""<esc>:call BC_AddChar(""")<cr>i
+
+function! BC_AddChar(schar)
+   if exists("b:robstack")
+       let b:robstack = b:robstack . a:schar
+   else
+       let b:robstack = a:schar
+   endif
+endfunction
+" Automatic parenthesis/brackets expansion }
+
+let g:ctrlp_custom_ignore = 'vendor\|common/tests/cache\|common/tests/_data\|console/migrations\|backend/web/fonts'
+
+set fillchars+=vert:\â”‚
+autocmd ColorScheme * highlight VertSplit cterm=NONE ctermfg=Green ctermbg=NONE
+
+" Netrw config
+let g:netrw_banner = 0
+let g:netrw_browse_split = 4
+let g:netrw_winsize = 20
+
+"colorscheme darcula
+colorscheme PaperColor
+set background=dark
+
+"XML formatting
+au FileType xml setlocal formatexpr=
+au FileType xml setlocal formatprg=xmllint\ --format\ -
+au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
+
+"Remove trailing spaces on save
+autocmd FileType c,cpp,java,php,python autocmd BufWritePre <buffer> %s/\s\+$//e
+
+autocmd BufRead,BufNewFile *.pp set ft=pascal
+"autocmd BufRead,BufNewFile *.janet set ft=lisp
+
+"PHP shit
 autocmd FileType php set iskeyword+=$
 
-nnoremap / /\v
-vnoremap / /\v
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
 
-map <F6> :NERDTreeToggle<CR>
-map <C-Right> :bn<CR>
-map <C-Left> :bp<CR>
-imap <C-BS> <C-w>
-map <S-Enter> O<Esc>j
-nmap <CR> o<Esc>k
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
-map <C-k> <C-Y>
-map <C-j> <C-E>
-map <C-h> zH
-map <C-l> zL
-"map <C-Down> <C-E>
-"map <C-Up> <C-Y>
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
 
-" quicker window switching
-"nnoremap <C-h> <C-w>h
-"nnoremap <C-l> <C-w>l
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
-nnoremap <silent> <leader>q :q<CR>
-nnoremap <silent> <leader>w :up<CR> :bd<CR>
-nnoremap <silent> <leader>s :w<CR>
+" Create Ag command
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+nnoremap \ :Ag<SPACE>
 
-set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
-nmap <F5> :!python "%"<CR>
-" Testes
-"filetype plugin on
-"let g:pydiction_location = 'C:\Program Files (x86)\Vim\vimfiles\ftplugin\pydiction\complete-dict'
+" Vdebug
+if !exists('g:vdebug_options')
+  let g:vdebug_options = {}
+endif
+let g:vdebug_options.path_maps = {"/srv/www/elloweb": "/home/clayton/dev/aragorn"}
+let g:vdebug_options.break_on_open = 0
+let g:vdebug_keymap = {
+\    "run" : "<F9>",
+\    "run_to_cursor" : "<F4>",
+\    "step_over" : "<F8>",
+\    "step_into" : "<F7>",
+\    "step_out" : "<S-F8>",
+\    "close" : "<C-F6>",
+\    "detach" : "<C-F7>",
+\    "set_breakpoint" : "<F5>",
+\    "get_context" : "<F11>",
+\    "eval_under_cursor" : "<F12>",
+\    "eval_visual" : "<Leader>e",
+\}
 
-" --------------------------------------
-" Ativa fechamento automático para parêntese
-" Set automatic expansion of parenthesis/brackets
-"inoremap ( ()<esc>:call BC_AddChar(")")<cr>i
-"inoremap { {}<esc>:call BC_AddChar("}")<cr>i
-"inoremap [ []<esc>:call BC_AddChar("]")<cr>i
-" inoremap " ""<esc>:call BC_AddChar(""")<cr>i
-"
-" mapeia CTRL+j para pular fora de parênteses colchetes etc...
-"inoremap <C-j> <esc>:call search(BC_GetChar(), "W")<cr>a
-" Function for the above
-" function! BC_AddChar(schar)
-"    if exists("b:robstack")
-"        let b:robstack = b:robstack . a:schar
-"    else
-"        let b:robstack = a:schar
-"    endif
-" endfunction
-" function! BC_GetChar()
-"    let l:char = b:robstack[strlen(b:robstack)-1]
-"    let b:robstack = strpart(b:robstack, 0, strlen(b:robstack)-1)
-"    return l:char
-" endfunction
-
-"set statusline=[%{&ff}/%Y]\ [ASCII=\%03.3b]-\ [%04l,%04v][%p%%]
-"set laststatus=2
-
-"FuzzyFinder
-map ,f :FufFile<CR>
