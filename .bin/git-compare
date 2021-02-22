@@ -1,0 +1,2 @@
+#!/bin/bash
+start TortoiseGitProc.exe /command:showcompare /revision1:$1 /revision2:$2
